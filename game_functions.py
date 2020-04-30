@@ -105,7 +105,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if collisions:
         for aliens in collisions.values():
-        stats.score += ai_settings.alien_points
+            stats.score += ai_settings.alien_points * len(aliens)
         sb.prep_score()
     if len(aliens) == 0:
         # 删除现有的子弹，加快游戏节奏，并创建一群新的外星人
@@ -196,6 +196,14 @@ def check_cliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
             ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
             break
 
+def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+    """检查是否有外星人到达了屏幕底部"""
+    screen_rect = screen.get_rect()
+    for alien in aliens:
+        if alien.rect.bottom >= screen_rect.bottom:
+            # 像飞船被撞到一样进行处理
+            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            break
 
 def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     """检查是否有外星人处理屏幕边缘，并更新外星人群所有外星人的位置"""
@@ -204,5 +212,7 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     # 检测外星人和飞船之间的碰撞
     if pygame.sprite.spritecollideany(ship, aliens):
         ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+    # 检查是否有外星人到达屏幕底部
+    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
     # 检查是否有外星人到达屏幕底端
     check_cliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
