@@ -222,4 +222,4 @@ def check_high_score(stats, sb):
     """检查是否誔生了新的最高分"""
     if stats.score > stats.high_score:
         stats.high_score = stats.score
-        sb.prep_score()
+        sb.prep_high_score()
